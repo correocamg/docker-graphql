@@ -18,14 +18,22 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: docker login
+    - name: Docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo "Logging in to Docker Hub..."
+        echo "Iniciando logging en Docker Hub..."
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-        echo "Login successful!"
+        echo "Login satisfactorio!"
 
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Build and push the Docker image
+      run: |
+        IMAGE_NAME="docker-graphql:$(date +%s)"
+        echo "Construyendo la imagen Docker con el nombre: $IMAGE_NAME"
+        docker build . --file Dockerfile --tag $IMAGE_NAME
+        echo "Imagen construida exitosamente: $IMAGE_NAME"
+        echo "Pushing the image to Docker Hub..."
+        docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME
+        docker push $DOCKER_USER/$IMAGE_NAME
+        echo "Imagen empujada exitosamente a Docker Hub: $DOCKER_USER/$IMAGE_NAME"
