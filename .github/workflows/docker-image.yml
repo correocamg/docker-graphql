@@ -27,13 +27,8 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
         echo "Login satisfactorio!"
 
-    - name: Build and push the Docker image
-      run: |
-        IMAGE_NAME="correocamg/docker-graphql"
-        echo "Construyendo la imagen Docker con el nombre: $IMAGE_NAME"
-        docker build . --file Dockerfile --tag $IMAGE_NAME
-        echo "Imagen construida exitosamente: $IMAGE_NAME"
-        echo "Pushing the image to Docker Hub..."
-        docker tag $IMAGE_NAME $DOCKER_USER/$IMAGE_NAME
-        docker push $DOCKER_USER/$IMAGE_NAME
-        echo "Imagen empujada exitosamente a Docker Hub: $DOCKER_USER/$IMAGE_NAME"
+    - name: Build Docker Image
+      run: docker build -t correocamg/docker-graphql:0.0.1 .
+
+    - name: Push Docker Image
+      run: docker push correocamg/docker-graphql:0.0.1 .
