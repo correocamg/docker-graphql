@@ -29,7 +29,7 @@ jobs:
 
     - name: Build and push the Docker image
       run: |
-        IMAGE_NAME="correocamg/docker-graphql:$(date +%s)"
+        IMAGE_NAME="correocamg/docker-graphql"
         echo "Construyendo la imagen Docker con el nombre: $IMAGE_NAME"
         docker build . --file Dockerfile --tag $IMAGE_NAME
         echo "Imagen construida exitosamente: $IMAGE_NAME"
