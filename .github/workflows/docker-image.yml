@@ -13,10 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      
     - name: Check out the repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
 
     - name: Git Semantic Version
       uses: PaulHatch/semantic-version@v4.0.3
@@ -32,23 +34,28 @@ jobs:
         format: "${major}.${minor}.${patch}-prerelease${increment}"
       id: semversion
 
+
     - name: Docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        VERSION: ${{ steps.semversion.outputs.version }}
       run: |
         echo "Iniciando logging en Docker Hub..."
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
         echo "Login satisfactorio!"
-        echo "Construyendo la imagen Docker version: $VERSION"
 
-    # - name: Build Docker Image
-    #   run: |
-    #     docker build -t correocamg/docker-graphql:0.0.1 .
-    #     docker build -t correocamg/docker-graphql:latest .
 
-    # - name: Push Docker Image
-    #   run: |
-    #     docker push correocamg/docker-graphql:0.0.1
-    #     docker push correocamg/docker-graphql:latest
+    - name: Build Docker Image
+      env:
+        VERSION: ${{ steps.semversion.outputs.version }}
+      run: |
+        docker build -t correocamg/docker-graphql:$VERSION .
+        docker build -t correocamg/docker-graphql:latest .
+
+
+    - name: Push Docker Image
+      env:
+        VERSION: ${{ steps.semversion.outputs.version }}
+      run: |
+        docker push correocamg/docker-graphql:$VERSION
+        docker push correocamg/docker-graphql:latest
